@@ -14,7 +14,7 @@ low_health_playing = False
 
 
 def try_spawn_ghost():
-    if random.randint(1, 10) == 1:
+    if random.randint(1, 100000) == 1:
         ghost_encounter()
 
 
