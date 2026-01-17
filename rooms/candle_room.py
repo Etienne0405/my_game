@@ -231,10 +231,13 @@ def button_box():
     button_box_path = os.path.join("music", "draw_card", "button.mp3")
     button_box_sound = pygame.mixer.Sound(button_box_path)
     button_box_sound.play()
-    typewriter("You pressed the button on the box.\n")
+    typewriter("You try pressing the button on the box.\n")
+    typewriter("It seems stuck..")
 
-    if "ammo" not in inventory:
-        inventory.append("ammo")
-        typewriter("Pistol ammo rolled out of the box! Without a gun it seems useless.\n")
-    else:
-        typewriter("You waited for the box to do something, but it seems it doesn't work twice..\n")
+    if "wd-40" in inventory:
+        typewriter("You apply some wd-40 to the button and try pressing it again.")
+        if "ammo" not in inventory:
+            inventory.append("ammo")
+            typewriter("Pistol ammo rolled out of the box! Without a gun it seems useless.\n")
+        else:
+            typewriter("You waited for the box to do something, but it seems it doesn't work twice..\n")

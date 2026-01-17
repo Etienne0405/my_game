@@ -56,7 +56,7 @@ def play_gramophone():
     pygame.mixer.init()
 
     # Path to audio file
-    sound_path = os.path.join("music", "gramaphone.wav")
+    sound_path = os.path.join("music", "music", "gramaphone.wav")
 
     # Check if file exists
     if not os.path.exists(sound_path):
