@@ -1,12 +1,15 @@
 # This final project is made by Etienne Schaap
 # In this game you are stuck in a room in which you have to find items and solve puzzles to escape.
 # The game is only played in the terminal.
+import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 from rooms.main_room import main_room
 from utils.typewriter import typewriter
 import systems.game_state as gs
 import sys
 import time
+
 
 def start_game():
     while True:

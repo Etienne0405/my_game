@@ -1,3 +1,4 @@
+import os
 from utils.typewriter import typewriter
 
 import systems.health as health_system
@@ -5,8 +6,10 @@ from systems.inventory import inventory_check, inventory
 from systems.ghost_encounter import ghost_encounter
 
 import time
-import pygame
 import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+import pygame
+
 
 pygame.mixer.init()
 lopen_path = os.path.join("music", "overall", "lopen.wav")
@@ -92,45 +95,45 @@ def open_chest():
 """)
     typewriter("It seems the third one is unreadable.")
 
-compartment_opened = False  # Track if the player opened a compartment
+    compartment_opened = False  # Track if the player opened a compartment
 
-while True:
+    while True:
 
-    menu = (
-        "What will you do?\n\n"
-        "1 - Open the one with WD-40.\n"
-        '2 - Open the one that says "letter".\n'
-        "3 - Open the unreadable one.\n"
-        "4 - Go back.\n"
-        "> \n"
-    )
+        menu = (
+            "What will you do?\n\n"
+            "1 - Open the one with WD-40.\n"
+            '2 - Open the one that says "letter".\n'
+            "3 - Open the unreadable one.\n"
+            "4 - Go back.\n"
+            "> \n"
+        )
 
-    user_selection = input(menu)
+        user_selection = input(menu)
 
-    if user_selection in ["1", "2", "3"]:
-        if compartment_opened:
-            typewriter("Huh, the compartments are locked now..")
-            continue  # skip the rest of the loop
+        if user_selection in ["1", "2", "3"]:
+            if compartment_opened:
+                typewriter("Huh, the compartments are locked now..")
+                continue  # skip the rest of the loop
+            else:
+                compartment_opened = True  # mark that a compartment has been opened
+
+        if user_selection == "1":
+            if "wd-40" not in inventory:
+                typewriter("Hey there actually was a bottle of WD-40 here!")
+                inventory.append("wd-40")
+            else:
+                typewriter("Hey you shouldn't be able to look twice!")
+        elif user_selection == "2":
+            typewriter("Inside the compartment is a small folded letter.")
+            time.sleep(1)
+            typewriter('It reads: "For all non german speakers. There, where the wanderer is not, is happiness!"')
+        elif user_selection == "3":
+            typewriter("You open the unreadable compartment.")
+            ghost_encounter()
+        elif user_selection == "4":
+            break
         else:
-            compartment_opened = True  # mark that a compartment has been opened
-
-    if user_selection == "1":
-        if "wd-40" not in inventory:
-            typewriter("Hey there actually was a bottle of WD-40 here!")
-            inventory.append("wd-40")
-        else:
-            typewriter("Hey you shouldn't be able to look twice!")
-    elif user_selection == "2":
-        typewriter("Inside the compartment is a small folded letter.")
-        time.sleep(1)
-        typewriter('It reads: "For all non german speakers. There, where the wanderer is not, is happiness!"')
-    elif user_selection == "3":
-        typewriter("You open the unreadable compartment.")
-        ghost_encounter()
-    elif user_selection == "4":
-        break
-    else:
-        typewriter("Error, type the number associated with the option!")
+            typewriter("Error, type the number associated with the option!")
 
 
 

@@ -75,11 +75,13 @@ Looking at the couple, you feel a certain jealousy. They are smiling......\n""")
                 typewriter("It seems you already have a candle..\n")
 
         elif user_selection == "5":
-            if gs.rooms_unlocked["painting_room"] and health_system.leg_okay:
+            if gs.rooms_unlocked["painting_room"] and health_system.leg_okay and not gs.rooms_unlocked["hallway"]:
                 try_spawn_ghost()
                 enter_painting_room()
-            elif gs.rooms_unlocked["painting_room"] and not health_system.leg_okay:
+            elif gs.rooms_unlocked["painting_room"] and not health_system.leg_okay and not gs.rooms_unlocked["hallway"]:
                 typewriter("Your leg is too hurt to climb into the space behind the painting.\n")
+            elif gs.rooms_unlocked["painting_room"] and gs.rooms_unlocked["hallway"]:
+                typewriter("You don't dare go in the oven again..\n")
             elif "candle" in inventory or "flashlight" in inventory:
                 typewriter("With your light, you can see the details of the painting.\n")
                 try_spawn_ghost()
