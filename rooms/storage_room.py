@@ -2,19 +2,19 @@ from utils.typewriter import typewriter
 import systems.health as health_system
 from systems.inventory import inventory_check, inventory
 import systems.game_state as gs
-from systems.ghost_encounter import try_spawn_ghost
 from systems.candle_gasoline import try_initiate_cangas
+
 
 import time
 import os
 import pygame
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
-lopen_path = os.path.join("music", "overall", "lopen.wav")
+lopen_path = resource_path(os.path.join("music", "overall", "lopen.wav"))
 
 def unlock_room(room_name):
     gs.rooms_unlocked[room_name] = True
-    typewriter(f"{room_name.replace('_',' ').title()} is now unlocked!\n")
 
 def storage_door():
     typewriter("You walk towards the door.\n")
@@ -39,7 +39,6 @@ def storage_door():
         elif user_selection == "3":
             if gs.rooms_unlocked.get("storage_room", False):
                 typewriter("The door creaks open...")
-                try_spawn_ghost()
                 try_initiate_cangas()
                 sound = pygame.mixer.Sound(lopen_path)
                 sound.play()
@@ -48,7 +47,6 @@ def storage_door():
                 typewriter("It seems the door is locked.\n")
 
         elif user_selection == "4":
-            try_spawn_ghost()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             break
@@ -84,7 +82,6 @@ def storage_room():
                 typewriter("It's too dark to see anything.")
 
         elif user_selection == "4":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
@@ -136,19 +133,24 @@ def friendly_ghost_event():
 "           `'`'`'`---..,___`;.-'   ",
 ]
 
+    pygame.mixer.music.set_volume(0.3)
+
     for line in ghost_art:
         print(line)
         time.sleep(0.3)
 
     time.sleep(1)
 
-    # Initialize audio (safe to call multiple times)
-    pygame.mixer.init()
-
     # Load ghost voice
-    sound_path = os.path.join("music", "voices", "friendly_ghost.wav")
+    sound_path = resource_path(os.path.join("music", "voices", "friendly_ghost.wav"))
     sound = pygame.mixer.Sound(sound_path)
-    sound.play()   # play once
+    
+    channel = sound.play()   # play once
+
+    while channel.get_busy():
+        time.sleep(0.1)  # wait for the sound to finish playing
+
+    pygame.mixer.music.set_volume(1.0)
 
 
     typewriter(

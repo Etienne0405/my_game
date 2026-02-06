@@ -20,7 +20,7 @@ def enter_painting_room():
     typewriter("If you can correctly answer my questions, I will let you go.\n")
     time.sleep(1)
     
-    typewriter("'Which animal is on the wall of this room?'\n")
+    typewriter("'Which animal is on the wall in the main room?'\n")
     answer1 = input("> ")
 
     if answer1.replace(" ", "").lower() == "lion":
@@ -52,7 +52,7 @@ def enter_painting_room():
     answer3 = input("> ")
 
     if answer3.replace(" ", "").lower() == "gold":
-        typewriter("'Impressive! You may leave now, next time think twice before you wander through uncharted territories'\n")
+        typewriter("'Impressive! You may leave now, next time think twice before you wander through uncharted territories.'\n")
         time.sleep(1)
         typewriter("You crawl back out from behind the painting, relieved to be out of the heat.\n")
     else:
@@ -65,6 +65,7 @@ def enter_painting_room():
         typewriter("You crawl back out from behind the painting, feeling quite weak from the heat.\n")
 
     if all_correct:
-        unlock_room("hallway")
+        unlock_room("hidden_room")
+        unlock_room("enddoor_room")
         typewriter("You hear a faint noise.\n")
 

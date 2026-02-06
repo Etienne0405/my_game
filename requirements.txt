@@ -1,0 +1,4 @@
+pygame>=2.0.0
+chess>=1.0.0
+pyinstaller>=5.0.0
+windows-curses>=0.1.0

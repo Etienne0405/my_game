@@ -1,6 +1,7 @@
 from utils.typewriter import typewriter
 import systems.health as health_system
 from systems.inventory import inventory
+from utils.resource_path import resource_path
 
 import pygame
 import os
@@ -9,13 +10,13 @@ import time
 
 pygame.mixer.init()
 
-tripping_sound_path = os.path.join("music", "overall", "tripping.mp3")
+tripping_sound_path = resource_path(os.path.join("music", "overall", "tripping.mp3"))
 
 def try_initiate_cangas():
     if health_system.leg_okay:
-        cangas_chance = 35
+        cangas_chance = 100
     else:
-        cangas_chance = 20
+        cangas_chance = 50
 
     if random.randint(1, cangas_chance) == 1:
         initiate_cangas()
@@ -28,7 +29,7 @@ def initiate_cangas():
     if "candle" in inventory:
         typewriter("Your candle falls on the ground. To your horror, you realize the strong smelling liquid has been gasoline.")
         time.sleep(1)
-        flames_path = os.path.join("music", "overall", "fire.mp3")
+        flames_path = resource_path(os.path.join("music", "overall", "fire.mp3"))
         sound = pygame.mixer.Sound(flames_path)
         sound.play()   # play once
         typewriter("The room gets filled with flames. You caught fire.")

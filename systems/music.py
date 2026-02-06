@@ -1,5 +1,6 @@
 import pygame
 import os
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
 
@@ -8,12 +9,14 @@ current_track = None
 def play_music(track, loop=True):
     global current_track
 
-    if current_track == track:
-        return  # already playing this
-
     pygame.mixer.music.stop()
 
-    path = os.path.join("music", track)
+    # Handle both "music/track.wav" and "track.wav" formats
+    if track.startswith("music/"):
+        path = resource_path(track)
+    else:
+        path = resource_path(os.path.join("music", track))
+    
     pygame.mixer.music.load(path)
     pygame.mixer.music.play(-1 if loop else 0)
 

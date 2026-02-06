@@ -1,6 +1,7 @@
 from datetime import datetime
 from utils.typewriter import typewriter
 from rooms.storage_room import unlock_room  # this works because storage_room.py defines unlock_room
+from systems.ghost_encounter import ghost_encounter
 
 import time
 
@@ -51,6 +52,11 @@ def change_time():
 
     except ValueError:
         typewriter("That doesn't seem to be a valid time.")
+        # Consider this an invalid puzzle attempt and trigger a ghost
+        try:
+            ghost_encounter()
+        except Exception:
+            pass
 
 def trigger_midnight_event():
     typewriter("You hear very distorted creepy sounds, the clock is no longer moving and you feel the ground trembling below you. ")

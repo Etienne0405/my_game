@@ -6,14 +6,14 @@ from utils.typewriter import typewriter
 import systems.health as health_system
 from systems.inventory import inventory
 from systems.time_system import change_time
-from systems.ghost_encounter import try_spawn_ghost
 from systems.candle_gasoline import try_initiate_cangas
 
 import pygame
 import os
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
-lopen_path = os.path.join("music", "overall", "lopen.wav")
+lopen_path = resource_path(os.path.join("music", "overall", "lopen.wav"))
 
 def clock():
     typewriter("You walk towards the clock, it is an old pendulum clock and you hear the ticking now that you are closer.\n")
@@ -38,11 +38,9 @@ def clock():
             else:
                 typewriter("Your inventory is empty")
         elif user_selection == "3":
-            try_spawn_ghost()
             try_initiate_cangas()
             change_time()
         elif user_selection == "4":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()

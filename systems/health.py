@@ -1,18 +1,19 @@
 import sys
 from utils.typewriter import typewriter
+from utils.resource_path import resource_path
 import time
 import pygame
 import os
 
 # Global variables
 leg_okay = False
-health = 50  # start with 50
+health = 100  # start with 100
 max_health = 100
 
 def check_death():
     if health <= 0:
         pygame.mixer.init()
-        sound_path = os.path.join("music", "health", "death.mp3")
+        sound_path = resource_path(os.path.join("music", "health", "death.mp3"))
         sound = pygame.mixer.Sound(sound_path)
         sound.play()   # play once    
 
@@ -33,7 +34,7 @@ It seems you got stabbed by something. Walking is doable, but jumping or climbin
         
     # Check current leg health and show a message.
     pygame.mixer.init()
-    sound_path = os.path.join("music", "health", "check_leg.mp3")
+    sound_path = resource_path(os.path.join("music", "health", "check_leg.mp3"))
     sound = pygame.mixer.Sound(sound_path)
     sound.play()   # play once
 
@@ -45,7 +46,7 @@ def fix_leg():
     pygame.mixer.init()
 
     # Load ghost voice
-    sound_path = os.path.join("music", "health", "fix_leg.mp3")
+    sound_path = resource_path(os.path.join("music", "health", "fix_leg.mp3"))
     sound = pygame.mixer.Sound(sound_path)
     sound.play()   # play once
 

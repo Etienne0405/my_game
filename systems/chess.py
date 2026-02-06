@@ -198,7 +198,9 @@ def play_chess():
     typewriter('"If you can defeat me, I shall give you a precious item," the ghost whispers.\n')
     time.sleep(1)
 
-    typewriter("To play chess. Enter moves like: e2e4 or g1f3")
+    typewriter("To play chess. Enter moves like: e2e4 or g1f3.")
+    typewriter("To promote a pawn, append the piece letter: e7e8[letter]. [letter]=q, r, b, n.")
+    typewriter("Castling is done by moving the king 2 squares.")
     typewriter("Type 'quit' to leave the board.\n")
 
     

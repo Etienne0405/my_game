@@ -5,10 +5,11 @@ from rooms.candle_room import candle
 from rooms.lionhead_room import lionstatue
 from rooms.enddoor_room import before_enddoor
 from rooms.hallway_room import hallway
+from rooms.basement_room import basement
 
 import systems.health as health_system
 from systems.inventory import inventory_check, inventory
-from systems.ghost_encounter import try_spawn_ghost
+# ghost spawns are now triggered explicitly by puzzles
 from systems.candle_gasoline import try_initiate_cangas
 import systems.game_state as gs
 import systems.music as music
@@ -16,14 +17,15 @@ import systems.music as music
 import time
 import pygame
 import os
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
-lopen_path = os.path.join("music", "overall", "lopen.wav")
+lopen_path = resource_path(os.path.join("music", "overall", "lopen.wav"))
 
 def main_room():
-    music.play_music("music/theme_song.wav")
+    music.play_music("music/music/theme_song.wav")
     typewriter("""You wake up, your eyes are still heavy, and you feel a sharp pain in your leg.
-You find yourself on a hard cold floor soaked in a strong smelling liquid. It's almost completely dark.
+You find yourself on a hard cold floor soaked in a strong smelling liquid. It's almost completely dark. Below you are some stairs leading downwards.
 In the distance you see a couple of dimly lit candles standing on an antique table, next to it, on the wall, is a painting of a man on a dark empty road.
 Behind you, to the left, a hallway filled with light.
 You can't see more details on the painting.\n""")
@@ -38,11 +40,13 @@ You can't see more details on the painting.\n""")
             "3 - Walk towards the candles.\n"
             "4 - Walk towards the door.\n"
             "5 - Walk towards the hallway.\n"
+            "6 - Go downstairs.\n"
         )
 
         if "candle" in inventory or "flashlight" in inventory:
-            menu += "6 - Explore the room to the south-west.\n"
-            menu += "7 - Explore the room to the south-east.\n"
+            menu += "7 - Explore the room to the south-west.\n"
+            menu += "8 - Explore the room to the south-east.\n"
+
 
         menu += "> \n"
 
@@ -53,36 +57,39 @@ You can't see more details on the painting.\n""")
         elif user_selection == "2":
             inventory_check()
         elif user_selection == "3":  # move typewriter
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             candle()
         elif user_selection == "4":
-            typewriter("You walk towards the door.\n")
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             storage_door()
         elif user_selection == "5":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             hallway()
-        elif user_selection == "6" and ("candle" in inventory or "flashlight" in inventory):
-            try_spawn_ghost()
+        elif user_selection == "6":
+            if "candle" in inventory or "flashlight" in inventory:
+                try_initiate_cangas()
+                sound = pygame.mixer.Sound(lopen_path)
+                sound.play()
+                basement()
+            else:
+                typewriter("\nIt's too dark to go down the stairs safely. You should find some light first.\n")
+        elif user_selection == "7" and ("candle" in inventory or "flashlight" in inventory):
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             lionstatue(gs)
-        elif user_selection == "7" and ("candle" in inventory or "flashlight" in inventory):
-            try_spawn_ghost()
+        elif user_selection == "8" and ("candle" in inventory or "flashlight" in inventory):
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             before_enddoor()
+
 
         else:
             typewriter("\nError, try to type the number associated with the option!\n")

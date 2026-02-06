@@ -3,7 +3,6 @@ from utils.typewriter import typewriter
 import systems.game_state as gs
 import systems.health as health_system
 from systems.inventory import inventory_check
-from systems.ghost_encounter import try_spawn_ghost
 from systems.candle_gasoline import try_initiate_cangas
 
 import time
@@ -30,8 +29,10 @@ MIDNIGHT_DIALOGUE = [
     '"Trembling grounds below his feet, deep inside the depths where he fell. Was he fated to remain there in solitude, carrying an emptiness that no echo could answer?"'
 ]
 
+from utils.resource_path import resource_path
+
 pygame.mixer.init()
-lopen_path = os.path.join("music", "overall", "lopen.wav")
+lopen_path = resource_path(os.path.join("music", "overall", "lopen.wav"))
 
 def lionstatue(gs):  # pass in the global state object
     # Display entrance line
@@ -60,6 +61,9 @@ def lionstatue(gs):  # pass in the global state object
         elif user_selection == "2":
             inventory_check()
         elif user_selection == "3":
+            gs.room_visits += 1  # increment first
+            dialogue_line = MIDNIGHT_DIALOGUE[(gs.room_visits - 1) % len(MIDNIGHT_DIALOGUE)]
+
             typewriter("The lion moves its mouth slowly, and speaks to you in a vague low voice.")
             time.sleep(1)
             typewriter(dialogue_line)
@@ -67,10 +71,7 @@ def lionstatue(gs):  # pass in the global state object
             typewriter('"Or would he one day find the light, drawn by courage or by chance, and in that company turn his silent world into one rich with colour and life?"')
             time.sleep(1)
             typewriter("The lion closes its mouth.")
-            # Increment visit counter
-            gs.room_visits += 1
         elif user_selection == "4":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()

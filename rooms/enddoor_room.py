@@ -4,7 +4,6 @@ import systems.health as health_system
 from systems.inventory import inventory_check
 from systems.time_system import get_current_time
 
-from systems.ghost_encounter import try_spawn_ghost
 from systems.candle_gasoline import try_initiate_cangas
 
 from puzzles.enddoor_puzzle import end_door
@@ -13,9 +12,10 @@ from puzzles.desk_puzzle import desk
 
 import os
 import pygame
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
-lopen_path = os.path.join("music", "overall", "lopen.wav")
+lopen_path = resource_path(os.path.join("music", "overall", "lopen.wav"))
 
 
 def before_enddoor():
@@ -23,9 +23,7 @@ def before_enddoor():
     "Sadly it's locked.\n" \
     "Before the door lies a white carpet. " \
     "The carpet feels and smells very dirty with the strong smelling liquid on it.\n" \
-    "A little further you see a clock hanging on the wall. " \
-    "And towards your right, a stack of old newspapers on a desk.\n"
-    )
+    "A little further you see a clock hanging on the wall.\n")
 
     current_time = get_current_time().strftime("%H:%M")
     typewriter(f"\nThe clock reads {current_time}.\n")
@@ -36,7 +34,7 @@ def before_enddoor():
             "What will you do?\n\n"
             "1 - Check your leg, see if it's okay.\n"
             "2 - Check inventory.\n"
-            "3 - Try to open door\n"
+            "3 - Try to open the golden door.\n"
             "4 - Walk towards the clock.\n"
             "5 - Walk towards the desk.\n"
             "6 - Go back.\n"
@@ -51,27 +49,23 @@ def before_enddoor():
             inventory_check()
 
         elif user_selection == "3":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             end_door() # in puzzles
 
         elif user_selection == "4":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             clock() # In puzzles
         elif user_selection == "5":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
             desk()
 
         elif user_selection == "6":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()

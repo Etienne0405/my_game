@@ -3,7 +3,6 @@ from utils.typewriter import typewriter
 import systems.health as health_system
 from systems.inventory import inventory_check, inventory
 import systems.game_state as gs
-from systems.ghost_encounter import try_spawn_ghost
 from systems.candle_gasoline import try_initiate_cangas
 from systems.chess import play_chess
 
@@ -15,9 +14,10 @@ import time
 import random
 import os
 import pygame
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
-lopen_path = os.path.join("music", "overall", "lopen.wav")
+lopen_path = resource_path(os.path.join("music", "overall", "lopen.wav"))
 
 
 def candle():            
@@ -75,23 +75,20 @@ Looking at the couple, you feel a certain jealousy. They are smiling......\n""")
                 typewriter("It seems you already have a candle..\n")
 
         elif user_selection == "5":
-            if gs.rooms_unlocked["painting_room"] and health_system.leg_okay and not gs.rooms_unlocked["hallway"]:
-                try_spawn_ghost()
+            if gs.rooms_unlocked["painting_room"] and health_system.leg_okay and not gs.rooms_unlocked["hidden_room"]:
                 enter_painting_room()
-            elif gs.rooms_unlocked["painting_room"] and not health_system.leg_okay and not gs.rooms_unlocked["hallway"]:
+            elif gs.rooms_unlocked["painting_room"] and not health_system.leg_okay and not gs.rooms_unlocked["hidden_room"]:
                 typewriter("Your leg is too hurt to climb into the space behind the painting.\n")
-            elif gs.rooms_unlocked["painting_room"] and gs.rooms_unlocked["hallway"]:
+            elif gs.rooms_unlocked["painting_room"] and gs.rooms_unlocked["hidden_room"]:
                 typewriter("You don't dare go in the oven again..\n")
             elif "candle" in inventory or "flashlight" in inventory:
                 typewriter("With your light, you can see the details of the painting.\n")
-                try_spawn_ghost()
                 try_initiate_cangas()
                 painting()
             else:
                 typewriter("It's too dark to see the painting clearly, maybe check on it another time.\n")
 
         elif user_selection == "6":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
@@ -115,26 +112,33 @@ def option_menu_candletable():
         user_selection = input(menu)
 
         if user_selection == "1":
-            draw_path = os.path.join("music", "draw_card", "draw_card.mp3")
+            draw_path = resource_path(os.path.join("music", "draw_card", "draw_card.mp3"))
             draw = pygame.mixer.Sound(draw_path)
             draw.play()
             draw_card()
         elif user_selection == "2":
-            button_path = os.path.join("music", "draw_card", "button.mp3")
+            button_path = resource_path(os.path.join("music", "draw_card", "button.mp3"))
             button_sound = pygame.mixer.Sound(button_path)
             button_sound.play()
             button_box()
         elif user_selection == "3":
             typewriter("\nThe woman in the photo suddenly begins talking to you.\n")
             time.sleep(1)
+            pygame.mixer.music.set_volume(0.3)
 
-            sound_path = os.path.join("music", "photoghost.wav")
+            sound_path = resource_path(os.path.join("music", "voices", "photoghost.wav"))
 
             if os.path.exists(sound_path):
+
                 ghost_sound = pygame.mixer.Sound(sound_path)
-                ghost_sound.play()   # play once
+                channel = ghost_sound.play()
+
+                while channel.get_busy():
+                    time.sleep(0.1)
+
             else:
                 print("photoghost.wav not found!")
+            pygame.mixer.music.set_volume(1.0)
 
             # Small delay so the sound starts before the text
             time.sleep(0.5) 
@@ -154,7 +158,6 @@ def option_menu_candletable():
         elif user_selection == "4":
             play_chess()
         elif user_selection == "5":
-            try_spawn_ghost()
             try_initiate_cangas()
             sound = pygame.mixer.Sound(lopen_path)
             sound.play()
@@ -169,20 +172,20 @@ def draw_card():
     # Determine card based on percentages
     if 1 <= roll <= 30:
         typewriter("You drew the Laughing Clown! You heal 20 HP.\n")
-        clown_path = os.path.join("music", "draw_card", "clown.mp3")
+        clown_path = resource_path(os.path.join("music", "draw_card", "clown.mp3"))
         clown_sound = pygame.mixer.Sound(clown_path)
         clown_sound.play()
         health_system.health += 20
 
     elif 31 <= roll <= 60:
         typewriter("You drew the Demon! You lose 10 HP.\n")
-        demon_path = os.path.join("music", "draw_card", "demon.mp3")
+        demon_path = resource_path(os.path.join("music", "draw_card", "demon.mp3"))
         demon_sound = pygame.mixer.Sound(demon_path)
         demon_sound.play()
         health_system.health -= 10
 
     elif 61 <= roll <= 75:
-        earthquake_path = os.path.join("music", "draw_card", "earthquake.mp3")
+        earthquake_path = resource_path(os.path.join("music", "draw_card", "earthquake.mp3"))
         earthquake_sound = pygame.mixer.Sound(earthquake_path)
         earthquake_sound.play()
         if random.choice([True, False]):
@@ -203,20 +206,29 @@ The shaking actually felt kinda nice. You feel as if the quake messaged your eve
 
 
     elif 76 <= roll <= 90:
-        musicbox_path = os.path.join("music", "draw_card", "music_box.wav")
-        musicbox_sound = pygame.mixer.Sound(musicbox_path)                     
-        musicbox_sound.play()
+        from systems.music import stop_music, play_music
+        stop_music()
+        musicbox_path = resource_path(os.path.join("music", "draw_card", "music_box.wav"))
+        musicbox_sound = pygame.mixer.Sound(musicbox_path)
+        channel = musicbox_sound.play()
         typewriter("You drew the Music Box! Music starts playing...\n")
+        
+        # Wait for music box to finish playing
+        while channel.get_busy():
+            time.sleep(0.1)
+        
+        # Resume theme song
+        play_music("music/music/theme_song.wav")
 
     elif 91 <= roll <= 95:
-        hades_path = os.path.join("music", "draw_card", "hades.mp3")
+        hades_path = resource_path(os.path.join("music", "draw_card", "hades.mp3"))
         hades_sound = pygame.mixer.Sound(hades_path)
         hades_sound.play()
         typewriter("You drew Hades! You lose all HP!\n")
         health_system.health = 0
 
     elif 96 <= roll <= 100:
-        god_path = os.path.join("music", "draw_card", "god.mp3")
+        god_path = resource_path(os.path.join("music", "draw_card", "god.mp3"))
         god_sound = pygame.mixer.Sound(god_path)
         god_sound.play()
         typewriter("You drew God! You are fully healed!\n")
@@ -230,7 +242,7 @@ The shaking actually felt kinda nice. You feel as if the quake messaged your eve
 
 
 def button_box():
-    button_box_path = os.path.join("music", "draw_card", "button.mp3")
+    button_box_path = resource_path(os.path.join("music", "draw_card", "button.mp3"))
     button_box_sound = pygame.mixer.Sound(button_box_path)
     button_box_sound.play()
     typewriter("You try pressing the button on the box.\n")

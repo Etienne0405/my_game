@@ -3,6 +3,7 @@ from rooms.storage_room import unlock_room
 import time
 from systems.inventory import inventory_check, inventory
 import systems.game_state as gs
+from systems.ghost_encounter import ghost_encounter
 
 # ONLY POSSIBLE WITH THE CANDLE
 def painting():
@@ -17,7 +18,7 @@ He has beautiful hair waving in the wind, he wears an elegant brown suit and nic
 The paint in that section seems warmer in colour and you get a happy feeling from it.
 It seems as though the man is chasing that feeling.\n""")
     time.sleep(1)
-    typewriter("Above the painting, someone wrote something in german\n")
+    typewriter("Above the painting, someone wrote something in german.\n")
     time.sleep(1)
     typewriter("""[Ich wandle still, bin wenig froh,
 Und immer fragt der Seufzer, wo?
@@ -36,5 +37,7 @@ Im Geisterhauch tönt's mir zurück,
             unlock_room("painting_room")
         else:
             typewriter("Nothing happens. The painting remains in place.\n")
+            # Failed puzzle attempt — trigger a ghost encounter
+            ghost_encounter()
     else:
         typewriter("Too bad you don't have anything to write with.\n")
